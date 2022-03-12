@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ardalis.Specification" Version="5.2.0" />
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />

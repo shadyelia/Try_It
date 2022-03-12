@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TryIt.Core.DTOs;
-using TryIt.Web.Authorization;
-using TryIt.Web.Services;
+using TryIt.SharedKernel.Authorization;
+using TryIt.Core.Interfaces;
 
 namespace TryIt.Web.Controllers
 {

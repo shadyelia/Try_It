@@ -1,6 +1,11 @@
-﻿using TryIt.Web.Services;
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace TryIt.Web.Authorization
+namespace TryIt.SharedKernel.Authorization
 {
     public class JwtMiddleware
     {
@@ -11,14 +16,14 @@ namespace TryIt.Web.Authorization
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context,IUserService userService, IJwtUtils jwtUtils) 
+        public async Task Invoke(HttpContext context, IJwtUtils jwtUtils)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var userId = jwtUtils.ValidateToken(token);
             if (userId != null)
             {
                 // attach user to context on successful jwt validation
-                context.Items["User"] = userService.GetById(userId.Value);
+                context.Items["userId"] = userId;
             }
 
             await _next(context);

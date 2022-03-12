@@ -1,16 +1,19 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TryIt.Core.Interfaces;
+using TryIt.Core.Services;
 using TryIt.Infrastructure.Data;
 using TryIt.Infrastructure.DataMapping;
+using TryIt.SharedKernel.Authorization;
 using TryIt.SharedKernel.Data;
 using TryIt.SharedKernel.Helpers;
-using TryIt.Web.Authorization;
-using TryIt.Web.Services;
+using TryIt.SharedKernel.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 // add services to DI container
 {
@@ -78,11 +81,18 @@ var builder = WebApplication.CreateBuilder(args);
         });
     });
 
-
     // configure DI for application services
     services.AddScoped<IJwtUtils, JwtUtils>();
     services.AddScoped<IUserService, UserService>();
 }
+
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterGeneric(typeof(EfRepository<>))
+                  .As(typeof(IRepository<>))
+                  .As(typeof(IReadRepository<>))
+                  .InstancePerLifetimeScope();
+});
 
 var app = builder.Build();
 
