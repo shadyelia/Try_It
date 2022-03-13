@@ -79,11 +79,13 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
             new List<string>()
           }
         });
+        c.EnableAnnotations();
     });
 
     // configure DI for application services
     services.AddScoped<IJwtUtils, JwtUtils>();
     services.AddScoped<IUserService, UserService>();
+    services.AddScoped<IInitializationDataService, InitializationDataService>();
 }
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
