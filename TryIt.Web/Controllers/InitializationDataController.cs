@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TryIt.Core.Enums;
 using TryIt.Core.Interfaces;
-using TryIt.SharedKernel.Authorization;
 
 namespace TryIt.Web.Controllers
 {

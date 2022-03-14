@@ -18,19 +18,22 @@ namespace TryIt.SharedKernel.Authorization
         public string GenerateToken(string userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new Claim[]
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim("userId", userId)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                new Claim(JwtRegisteredClaimNames.Sub, _appSettings.Subject),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("userId", userId),
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Key));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                       _appSettings.Issuer,
+                       _appSettings.Audience,
+                       claims,
+                       expires: DateTime.UtcNow.AddDays(7),
+                       signingCredentials: signIn);
             string Token = tokenHandler.WriteToken(token);
-
             return Token;
         }
 
@@ -39,7 +42,7 @@ namespace TryIt.SharedKernel.Authorization
             if (token == null)
                 return null;
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_appSettings.Key);
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters()

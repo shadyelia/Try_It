@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TryIt.Core.DTOs;
-using TryIt.SharedKernel.Authorization;
 using TryIt.Core.Interfaces;
 
 namespace TryIt.Web.Controllers

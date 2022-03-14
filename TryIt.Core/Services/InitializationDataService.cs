@@ -6,7 +6,7 @@ namespace TryIt.Core.Services
 {
     public class InitializationDataService : IInitializationDataService
     {
-        private readonly long _numOfRecords = 10000;
+        private readonly long _numOfRecords = 1000000;
         public string InitDataStrucutre(DataStructuresTypesEnum type)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();

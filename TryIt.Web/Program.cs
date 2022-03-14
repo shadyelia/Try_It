@@ -1,6 +1,8 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TryIt.Core.Interfaces;
@@ -28,13 +30,22 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
     var appSettingsSection = builder.Configuration.GetSection("AppSettings");
     services.Configure<AppSettings>(appSettingsSection);
-    // configure jwt authentication
-    var appSettings = appSettingsSection.Get<AppSettings>();
-    var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
     services.AddCors();
     services.AddControllers();
-
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["AppSettings:Audience"],
+            ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Key"]))
+        };
+    });
     // Auto Mapper Configurations
     var mapperConfig = new MapperConfiguration(mc =>
     {
@@ -129,15 +140,13 @@ using (var scope = app.Services.CreateScope())
     // global error handler
     app.UseMiddleware<ErrorHandlerMiddleware>();
 
-    // custom jwt auth middleware
-    app.UseMiddleware<JwtMiddleware>();
-
     // Enable middleware to serve generated Swagger as a JSON endpoint.
     app.UseSwagger();
 
     // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"));
 
+    app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
 }
