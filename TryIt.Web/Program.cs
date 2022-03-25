@@ -97,6 +97,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
     services.AddScoped<IJwtUtils, JwtUtils>();
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<IInitializationDataService, InitializationDataService>();
+    services.AddScoped<ISearchingAlgorithmsService, SearchingAlgorithmsService>();
 }
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
